@@ -19,15 +19,16 @@ function _start_agent() {
 	# start ssh-agent and setup environment
 	zstyle -s :omz:plugins:ssh-agent lifetime lifetime
 
+	echo starting ssh-agent...
 	ssh-agent -s ${lifetime:+-t} ${lifetime} | sed 's/^echo/#echo/' >! $_ssh_env_cache
 	chmod 600 $_ssh_env_cache
 	. $_ssh_env_cache > /dev/null
 
-	# load identies
-	zstyle -a :omz:plugins:ssh-agent identities identities
-
-	echo starting ssh-agent...
-	ssh-add $HOME/.ssh/${^identities}
+	if ! zstyle -t :omz:plugins:ssh-agent lazy; then
+		# load identies
+		zstyle -a :omz:plugins:ssh-agent identities identities
+		ssh-add $HOME/.ssh/${^identities}
+	fi
 }
 
 # Get the filename to store/lookup the environment from
