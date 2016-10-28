@@ -45,7 +45,7 @@ elif [[ -f "$_ssh_env_cache" ]]; then
 	ps x | grep ssh-agent | grep -q $SSH_AGENT_PID || {
 		_start_agent
 	}
-else
+elif [[ -d "$(dirname "$_ssh_env_cache")" ]]; then
 	_start_agent
 fi
 
